@@ -6,7 +6,9 @@ from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 
 from django.contrib.auth.views import LoginView
-from .forms import CustomLoginForm
+from django.views.generic import CreateView
+
+from .forms import CustomLoginForm, RegistrationForm
 
 
 def user_login(request):
@@ -32,6 +34,23 @@ def user_logout(request):
     logout(request)
     messages.success(request, "Logout successful...")
     return redirect(reverse('login'))
+
+
+class UserRegistration(CreateView):
+    form_class = RegistrationForm
+    template_name = 'authentication/registration.html'
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        # Add a success message
+        messages.success(self.request, 'Registration successful. You can now log in.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Add an error message
+        messages.error(self.request, 'Registration failed. Please correct the errors below.')
+        return super().form_invalid(form)
+
 
 @login_required
 def dashboard(request):
