@@ -1,3 +1,4 @@
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -56,3 +57,5 @@ class UserRegistration(CreateView):
 def dashboard(request):
     # Add your dashboard logic here
     return render(request, 'authentication/dashboard.html')
+
+

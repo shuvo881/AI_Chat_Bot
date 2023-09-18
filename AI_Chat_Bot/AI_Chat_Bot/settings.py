@@ -125,8 +125,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+
 # settings.py
 LOGIN_REDIRECT_URL = 'dashboard/'  # Replace 'appname' with your app's name
-
-
 
