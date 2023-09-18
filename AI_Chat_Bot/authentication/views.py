@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -26,6 +26,12 @@ def user_login(request):
             messages.error(e)
     form = CustomLoginForm()
     return render(request, 'authentication/login.html', {"form": form})
+
+
+def user_logout(request):
+    logout(request)
+    messages.success(request, "Logout successful...")
+    return redirect(reverse('login'))
 
 @login_required
 def dashboard(request):
