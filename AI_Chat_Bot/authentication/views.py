@@ -53,9 +53,6 @@ class UserRegistration(CreateView):
         return super().form_invalid(form)
 
 
-@login_required
-def dashboard(request):
-    # Add your dashboard logic here
-    return render(request, 'authentication/dashboard.html')
+
 
 
