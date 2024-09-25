@@ -1,2 +1,74 @@
-\venv
-.idea
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+
+# Environment variables
+
+
+# Django migrations
+**/migrations/*
+
+# SQL and other database files
+*.sqlite3
+*.db
+
+# Django static files
+/staticfiles/
+/static/
+/media/
+/mediafiles/
+
+# Local environment settings
+/local_settings.py
+
+# Ignore virtual environments
+venv/
+.env/
+env/
+*.venv
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Compiled files
+*.tsbuildinfo
+*.css.map
+*.css
+
+# Build directories
+build/
+dist/
+
+# React specific
+/coverage
+
+
+# .next/ (for Next.js projects)
+/.next
+
+# Miscellaneous
+.DS_Store
+.idea/
+.vscode/
