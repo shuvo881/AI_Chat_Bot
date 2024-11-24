@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/';  // Fallback URL if not provided
-
 const axiosInstance = axios.create({
   baseURL: baseURL,  // Use the API base URL from .env or fallback
   timeout: 5000,  // 5 seconds timeout for API requests
