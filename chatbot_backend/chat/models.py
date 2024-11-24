@@ -13,7 +13,7 @@ class ChatTopic(models.Model):
 class ChatMessage(models.Model):
     topic = models.ForeignKey(ChatTopic, on_delete=models.CASCADE)
     user_message = models.TextField()
-    bot_response = models.TextField()
+    bot_response = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

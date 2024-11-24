@@ -1,7 +1,6 @@
 from django.urls import path, include
 from rest_framework_nested import routers
 from .views import ChatTopicViewSet, ChatMessageViewSet, register_user
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 # Main router for topics
 router = routers.DefaultRouter()
@@ -13,8 +12,7 @@ topics_router.register(r'messages', ChatMessageViewSet, basename='chat-messages'
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('', include(topics_router.urls)),  # Ensure this is included correctly
-    path('register/', register_user),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('', include(topics_router.urls)),  # Include nested routes
+    path('register/', register_user, name='register'),
+    
 ]

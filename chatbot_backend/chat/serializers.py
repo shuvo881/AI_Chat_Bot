@@ -11,4 +11,5 @@ class ChatTopicSerializer(serializers.ModelSerializer):
 class ChatMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatMessage
-        fields = ['id', 'topic', 'user_message', 'bot_response', 'timestamp']
+        fields = '__all__'
+        read_only_fields = ['bot_response', 'timestamp', 'topic']
