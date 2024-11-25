@@ -1,105 +1,112 @@
+// src/components/Chatbot.js
 import React, { useState } from 'react';
-import ChatList from './ChatList';
-import axiosInstance from '../services/axios';
+import {
+  MainContainer,
+  Sidebar,
+  ConversationList,
+  Conversation,
+  ChatContainer,
+  MessageList,
+  Message,
+  MessageInput,
+  TypingIndicator,
+} from '@chatscope/chat-ui-kit-react';
 
 const Chatbot = () => {
-  const [selectedTopic, setSelectedTopic] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [messages, setMessages] = useState([
+    {
+      message: 'Hello! How can I assist you today?',
+      sentTime: 'just now',
+      sender: 'ChatGPT',
+      direction: 'incoming',
+    },
+  ]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [activeConversation, setActiveConversation] = useState('1');
 
-  // Function to select an existing chat topic
-  const selectChat = async (topicId) => {
-    try {
-      const response = await axiosInstance.get(`/topics/${topicId}/messages/`);
-      setMessages(response.data);
-      setSelectedTopic(topicId);
-      setError('');
-    } catch (error) {
-      console.error('Error fetching chat messages:', error);
-      setError('Failed to load chat messages.');
-    }
+  const conversations = [
+    { id: '1', name: 'General Inquiry' },
+    { id: '2', name: 'Technical Support' },
+    { id: '3', name: 'Billing' },
+  ];
+
+  const handleSend = async (message) => {
+    const newMessage = {
+      message,
+      direction: 'outgoing',
+      sender: 'user',
+    };
+
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setIsTyping(true);
+
+    // Simulate a response from the chatbot
+    setTimeout(() => {
+      const botResponse = {
+        message: "I'm here to help you with your queries.",
+        sender: 'ChatGPT',
+        direction: 'incoming',
+      };
+      setMessages((prevMessages) => [...prevMessages, botResponse]);
+      setIsTyping(false);
+    }, 1000);
   };
 
-  // Function to send a new message
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
-    setLoading(true);
-
-    try {
-      // If a topic is selected, send message to existing topic, else create a new topic
-      const endpoint = selectedTopic
-        ? `/topics/${selectedTopic}/messages/`
-        : `/topics/messages/`;  // When no topic is selected, the backend will create a new one
-
-      const response = await axiosInstance.post(endpoint, {
-        user_message: input,
-      });
-
-      // If no topic was selected, the backend will create a new topic, so set the new topic
-      if (!selectedTopic) {
-        setSelectedTopic(response.data.topic);  // Assuming the response includes the new topic ID
-      }
-
-      setMessages([response.data, ...messages]);  // Add new message to the chat
-      setInput('');  // Clear the input field
-      setError('');
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setError('Failed to send message.');
-    } finally {
-      setLoading(false);
-    }
+  const handleConversationClick = (id) => {
+    setActiveConversation(id);
+    // Load messages for the selected conversation
+    // For demonstration, we'll reset messages
+    setMessages([
+      {
+        message: `You have selected the ${conversations.find((c) => c.id === id).name} conversation.`,
+        sentTime: 'just now',
+        sender: 'ChatGPT',
+        direction: 'incoming',
+      },
+    ]);
   };
 
   return (
-    <div className="flex">
-      <ChatList selectChat={selectChat} />
-      <div className="flex flex-col w-3/4 bg-white p-6">
-        <div className="flex-grow h-96 overflow-y-auto bg-gray-50 p-4 rounded-lg mb-4">
-          {messages.length > 0 ? (
-            messages.map((message, index) => (
-              <div key={index} className="mb-4">
-                <p className="text-gray-800">
-                  <strong>User:</strong> {message.user_message}
-                </p>
-                <p className="text-gray-500">
-                  <strong>Bot:</strong> {message.bot_response}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No messages yet.</p>
-          )}
-        </div>
-
-        {/* Error display */}
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-
-        {/* Message input form */}
-        <form onSubmit={sendMessage} className="flex">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none"
-            disabled={loading}
-          />
-          <button
-            type="submit"
-            className={`ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={loading}
+    <div style={{ height: '100vh', width: '100%' }}>
+      <MainContainer responsive>
+        <Sidebar position="left" scrollable>
+          <ConversationList>
+            {conversations.map((conv) => (
+              <Conversation
+                key={conv.id}
+                name={conv.name}
+                active={conv.id === activeConversation}
+                onClick={() => handleConversationClick(conv.id)}
+              />
+            ))}
+          </ConversationList>
+        </Sidebar>
+        <ChatContainer>
+          <MessageList
+            typingIndicator={
+              isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null
+            }
           >
-            {loading ? 'Sending...' : 'Send'}
-          </button>
-        </form>
-      </div>
+            {messages.map((msg, i) => (
+              <Message
+                key={i}
+                model={{
+                  message: msg.message,
+                  sentTime: msg.sentTime,
+                  sender: msg.sender,
+                  direction: msg.direction,
+                  position: 'single',
+                }}
+              />
+            ))}
+          </MessageList>
+          <MessageInput
+            placeholder="Type your message here..."
+            onSend={handleSend}
+            attachButton={false}
+          />
+        </ChatContainer>
+      </MainContainer>
     </div>
   );
 };
