@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from .models import ChatTopic, ChatMessage
 from .serializers import ChatTopicSerializer, ChatMessageSerializer
+from .llm_model.main import get_response
 
 
 class ChatTopicViewSet(viewsets.ModelViewSet):
@@ -66,7 +67,7 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
                 chat_topic = get_object_or_404(ChatTopic, id=topic_id)
 
             # Placeholder for actual bot response logic
-            bot_response = "This is a bot response."
+            bot_response = get_response(user_message)
 
             serializer.save(topic=chat_topic, bot_response=bot_response)
 
